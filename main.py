@@ -6,11 +6,14 @@ from telegram.ext.callbackcontext import CallbackContext
 from telegram.ext.commandhandler import CommandHandler
 from telegram.ext.messagehandler import MessageHandler
 from telegram.ext.filters import Filters
+from datetime import datetime
 
 from keep_alive import keep_alive
 
 API_KEY = os.environ['API_KEY']
-BOT_NAME = os.environ['BOT_NAME']
+BOT_NAME = []
+BOT_NAME.append(os.environ['BOT_NAME'])
+BOT_NAME.append(os.environ['BOT_NAME_ALT'])
 
 
 def greet(update, context):
@@ -22,11 +25,15 @@ def help(update, context):
 
 
 def handle_response(text: str) -> str:
-  if 'hello' in text or 'hey' in text:
+  if text in ('hey', 'hi', 'hello', 'lo'):
     return 'Well hello there'
-
   if 'how are you' in text:
     return 'Im all good, thanks'
+  if text in ('date', 'date?', 'time', 'time?'):
+    dateNow = datetime.now()
+    date = dateNow.strftime('%d/%m/%y, %H:%M:%S')
+    return str(date)
+
   return 'What?'
 
 
@@ -41,10 +48,10 @@ def handle_message(update, context):
     print(
       f'Group chat id ({update.message.chat.id}) says:"{text}" in: {message_type}'
     )
-    if BOT_NAME in text:
-      print('Tagging the bot recognized')
-      new_text = text.replace(BOT_NAME, '').strip()
-      response = handle_response(new_text)
+    if text in BOT_NAME:
+      print('Tagging the bot recognized *******************************')
+    # new_text = text.replace(BOT_NAME, '').strip()
+    #response = handle_response(new_text)
   else:
     print(f'User ({update.message.chat.id}) says:"{text}" in: {message_type}')
     response = handle_response(text)
