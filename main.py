@@ -31,7 +31,7 @@ def handle_response(text: str) -> str:
     return 'Im all good, thanks'
   if text in ('date', 'date?', 'time', 'time?'):
     dateNow = datetime.now()
-    date = dateNow.strftime('%d/%m/%y, %H:%M:%S')
+    date = dateNow.strftime('%d/%m/%y, %H:%M:%S @GMT +00:00')
     return str(date)
 
   return 'What?'
@@ -41,17 +41,16 @@ def handle_message(update, context):
   message_type = update.message.chat.type
   text = str(update.message.text).lower()
   response = ''
-
   #print(f'User ({update.message.chat.id}) says:"{text}" in: {message_type}')
 
   if message_type == 'group':
     print(
       f'Group chat id ({update.message.chat.id}) says:"{text}" in: {message_type}'
     )
-    if text in BOT_NAME:
-      print('Tagging the bot recognized *******************************')
-    # new_text = text.replace(BOT_NAME, '').strip()
-    #response = handle_response(new_text)
+    for i in BOT_NAME:
+      if i in text:
+        new_text = text.replace('@' + i, '').strip()
+        response = handle_response(new_text)
   else:
     print(f'User ({update.message.chat.id}) says:"{text}" in: {message_type}')
     response = handle_response(text)
