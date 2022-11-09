@@ -7,6 +7,9 @@ from telegram.ext.commandhandler import CommandHandler
 from telegram.ext.messagehandler import MessageHandler
 from telegram.ext.filters import Filters
 from datetime import datetime
+import jokes
+import asyncio
+import time
 
 from keep_alive import keep_alive
 
@@ -23,8 +26,14 @@ def greet(update, context):
 def help(update, context):
   update.message.reply_text("No can do")
 
-
-def handle_response(text: str) -> str:
+async def handle_response(text: str) -> str:
+  if text in ('joke', 'tell a joke'):
+    joke = await jokes.tell_joke()
+    if len(joke) == 1:
+      return str(joke[2:-2])
+    if len(joke) == 2:
+      return joke
+        
   if text in ('hey', 'hi', 'hello', 'lo'):
     return 'Well hello there'
   if 'how are you' in text:
@@ -34,7 +43,7 @@ def handle_response(text: str) -> str:
     date = dateNow.strftime('%d/%m/%y, %H:%M:%S @GMT +00:00')
     return str(date)
 
-  return 'What?'
+  return await 'What?'
 
 
 def handle_message(update, context):
@@ -50,10 +59,10 @@ def handle_message(update, context):
     for i in BOT_NAME:
       if i in text:
         new_text = text.replace('@' + i, '').strip()
-        response = handle_response(new_text)
+        response = asyncio.run(handle_response(new_text))
   else:
     print(f'User ({update.message.chat.id}) says:"{text}" in: {message_type}')
-    response = handle_response(text)
+    response = asyncio.run(handle_response(text))
   update.message.reply_text(response)
 
 
