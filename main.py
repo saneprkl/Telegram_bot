@@ -8,6 +8,7 @@ from telegram.ext.messagehandler import MessageHandler
 from telegram.ext.filters import Filters
 from datetime import datetime
 import jokes
+import weather_api
 import asyncio
 import time
 
@@ -29,10 +30,19 @@ def help(update, context):
 async def handle_response(text: str) -> str:
   if text in ('joke', 'tell a joke'):
     joke = await jokes.tell_joke()
-    if len(joke) == 1:
-      return str(joke[2:-2])
     if len(joke) == 2:
-      return joke
+      print("2 parter", joke)
+      j = ' '.join(joke)
+      return j
+        
+    print("single", joke)
+    return joke
+
+  if text.startswith("weather ") == True:
+    city = text.replace("weather ", "")
+    print("weather recognized -->", city)
+    weather = await weather_api.weather_city(city)
+    print(weather)
         
   if text in ('hey', 'hi', 'hello', 'lo'):
     return 'Well hello there'
@@ -43,7 +53,7 @@ async def handle_response(text: str) -> str:
     date = dateNow.strftime('%d/%m/%y, %H:%M:%S @GMT +00:00')
     return str(date)
 
-  return await 'What?'
+  return 'What?'
 
 
 def handle_message(update, context):
