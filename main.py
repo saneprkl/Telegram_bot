@@ -7,6 +7,7 @@ from telegram.ext.commandhandler import CommandHandler
 from telegram.ext.messagehandler import MessageHandler
 from telegram.ext.filters import Filters
 from datetime import datetime
+from pprint import pprint
 import jokes
 import weather_api
 import asyncio
@@ -41,8 +42,10 @@ async def handle_response(text: str) -> str:
   if text.startswith("weather ") == True:
     city = text.replace("weather ", "")
     print("weather recognized -->", city)
-    weather = await weather_api.weather_city(city)
-    print(weather)
+    weather = weather_api.weather_city(city)
+    pprint(weather)
+    current_weather = f"Weather in {weather[0]}\nTemperature {weather[1]} °C\nWind speed {weather[2]} m/s\nHumidity {weather[3]}\nSunrise {weather[4]}\nSunset {weather[5]}\nLength of day is {weather[6]}"
+    return current_weather
         
   if text in ('hey', 'hi', 'hello', 'lo'):
     return 'Well hello there'
