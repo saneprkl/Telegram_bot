@@ -26,7 +26,10 @@ def greet(update, context):
 
 
 def help(update, context):
-  update.message.reply_text("No can do")
+  help_message = f"You can talk to the bot by tagging it with @{BOT_NAME[0]} or @{BOT_NAME[1]} \
+    \n\nIt can tell jokes:\ne.g. --> @{BOT_NAME[0]} joke \
+      \n\nYou can get the current weather around the world based on a city:\ne.g. --> @{BOT_NAME[0]} weather helsinki"
+  update.message.reply_text(help_message)
 
 async def handle_response(text: str) -> str:
   if text in ('joke', 'tell a joke'):
