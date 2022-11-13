@@ -17,6 +17,7 @@ def weather_city(city):
     sunrise_time = datetime.datetime.fromtimestamp(data["sys"]["sunrise"])
     sunset_time = datetime.datetime.fromtimestamp(data["sys"]["sunset"])
     day_length = datetime.datetime.fromtimestamp(data["sys"]["sunset"]) - datetime.datetime.fromtimestamp(data["sys"]["sunrise"])
-    return location, temp, wind, humidity, sunrise_time, sunset_time, day_length
+    weather_symbol = data["weather"][0]["main"]
+    return location, temp, wind, humidity, sunrise_time, sunset_time, day_length, weather_symbol
   except Exception as ex:
     print(ex, "exception occured")
