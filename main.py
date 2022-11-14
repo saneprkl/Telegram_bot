@@ -10,7 +10,7 @@ from datetime import datetime
 from pprint import pprint
 import jokes
 import weather_api
-import forecast
+import forecast_api
 import asyncio
 import time
 
@@ -70,7 +70,9 @@ async def handle_response(text: str, update) -> str:
     return getWeather(text)
   if text.startswith("forecast ") == True:
     print("found")
-    return forecast.forecast(text)
+    city = text.replace("forecast ", "")
+    getForecast = forecast_api.forecast(city)
+    print(getForecast, "?????????")
   if text in ('hey', 'hi', 'hello', 'lo'):
     return f'Well hello there {update.message.chat.first_name}'
   if 'how are you' in text:
