@@ -32,28 +32,6 @@ def help(update, context):
       \n\nYou can get the current weather around the world based on a city:\ne.g. --> @{BOT_NAME[0]} weather helsinki"
   update.message.reply_text(help_message)
 
-weather_symbols = {
-  "Snow": "\U0001F328",
-  "Clouds": "\U00002601",
-  "Rain": "\U00002614",
-  "Drizzle": "\U00002614",
-  "Thunderstorm": "\U000026A1",
-  "Mist": "\U0001F32B",
-  "Clear": "\U00002600",
-  "Fog": "\U0001F32B"
-}
-# Get weather by city
-def getWeather(text):
-  symbol = ""
-  city = text.replace("weather ", "")
-  print("weather recognized -->", city)
-  weather = weather_api.weather_city(city)
-  pprint(weather)
-  if weather[7] in weather_symbols:
-    symbol = weather_symbols[weather[7]]
-  current_weather = f"Weather in {weather[0]}\nTemperature {weather[1]} °C\n{weather[7]} {symbol}\nWind speed {weather[2]} m/s\nHumidity {weather[3]}%\nSunrise {weather[4]}\nSunset {weather[5]}\nLength of day is {weather[6]}"
-  return current_weather
-
 # Handles the response to user input
 async def handle_response(text: str, update) -> str:
   if text in ('joke', 'tell a joke'):
@@ -67,7 +45,7 @@ async def handle_response(text: str, update) -> str:
     return joke
 
   if text.startswith("weather ") == True:
-    return getWeather(text)
+    return weather_api.getWeather(text)
   if text.startswith("forecast ") == True:
     print("found")
     city = text.replace("forecast ", "")
@@ -88,13 +66,10 @@ def handle_message(update, context):
   message_type = update.message.chat.type
   text = str(update.message.text).lower()
   response = ''
-  #print(f'User ({update.message.chat.id}) says:"{text}" in: {message_type}')
 
   # Check if message in group chat
   if message_type == 'group':
-    print(
-      f'Group chat id ({update.message.chat.id}) says:"{text}" in: {message_type}'
-    )
+    print(update)
     for i in BOT_NAME:
       if i in text:
         new_text = text.replace('@' + i, '').strip()
@@ -108,6 +83,7 @@ def handle_message(update, context):
 
 
 def error(update, context):
+  print("error")
   print(f'Update {update} caused error: {context.error}')
 
 
