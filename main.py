@@ -11,6 +11,7 @@ from pprint import pprint
 import jokes
 import weather_api
 import forecast_api
+import convert
 import asyncio
 import time
 
@@ -21,16 +22,20 @@ BOT_NAME = []
 BOT_NAME.append(os.environ['BOT_NAME'])
 BOT_NAME.append(os.environ['BOT_NAME_ALT'])
 
+
 # /greet command
 def greet(update, context):
   update.message.reply_text("Greetings")
+
 
 # /help command
 def help(update, context):
   help_message = f"You can talk to the bot by tagging it with @{BOT_NAME[0]} or @{BOT_NAME[1]} \
     \n\nIt can tell jokes:\ne.g. --> @{BOT_NAME[0]} joke \
       \n\nYou can get the current weather around the world based on a city:\ne.g. --> @{BOT_NAME[0]} weather helsinki"
+
   update.message.reply_text(help_message)
+
 
 # Handles the response to user input
 async def handle_response(text: str, update) -> str:
@@ -40,10 +45,12 @@ async def handle_response(text: str, update) -> str:
       print("2 parter", joke)
       j = ' '.join(joke)
       return j
-        
+
     print("single", joke)
     return joke
 
+  if text.startswith("convert ") == True:
+    return convert.convertCurrency(text)
   if text.startswith("weather ") == True:
     return weather_api.getWeather(text)
   if text.startswith("forecast ") == True:
@@ -74,7 +81,7 @@ def handle_message(update, context):
       if i in text:
         new_text = text.replace('@' + i, '').strip()
         response = asyncio.run(handle_response(new_text, update))
-        
+
   # Else message will be in private chat
   else:
     print(f'User ({update.message.chat.id}) says:"{text}" in: {message_type}')
